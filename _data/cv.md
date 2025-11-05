@@ -1,1 +1,1 @@
-This is my [CV](../CV.pdf)
+This is my [CV](../CV.pdf).

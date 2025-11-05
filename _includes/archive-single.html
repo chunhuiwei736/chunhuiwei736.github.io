@@ -51,6 +51,10 @@
     {% elsif post.excerpt and site.read_more == 'enabled' %}
     <p class="archive__item-excerpt" itemprop="description"><p>{{ post.excerpt | markdownify | remove: '<p>' | remove: '</p>' }}<strong><a href="{{ base_path }}{{ post.url }}" rel="permalink"> Read more</a></strong></p></p>
     {% endif %}
+
+    {% if post.author %}
+    <p>With {{post.author}} </p>
+    {% endif %}
     
     {% if post.paperpdf and post.paperurl %}
       <p style="font-size: smaller"><a href="{{ post.paperurl }}">Visit Website</a> | <a href="{{ post.paperpdf }}">Download Paper</a></p>

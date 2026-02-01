@@ -88,7 +88,7 @@ publication_category:
   #conferences:
     #title: 'Conference Papers'
   preprints:
-    #title: 'Preprints'
+    title: 'Preprints'
 
 # Site Settings
 teaser                   :  # filename of teaser fallback teaser image placed in /images/ for social media previews

@@ -4,6 +4,7 @@ collection: publications
 category: preprints
 date: 2026-01-28
 venue: 'Arxiv'
+author: 'Chunhui Wei'
 paperurl: 'https://arxiv.org/abs/2601.14626'
 paperpdf: 'https://chunhuiwei736.github.io/files/Devissage.pdf'
 ---

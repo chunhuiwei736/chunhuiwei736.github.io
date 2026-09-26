@@ -36,7 +36,6 @@ redirect_from:
   <div class="academic-section__heading">
     <p class="academic-eyebrow">Background</p>
     <h2 id="education-title">Educational background</h2>
-    <p>My academic training spans mathematics, geometry, topology, and algebraic K-theory.</p>
   </div>
   <div class="academic-education__timeline">
     <article class="academic-education__item">

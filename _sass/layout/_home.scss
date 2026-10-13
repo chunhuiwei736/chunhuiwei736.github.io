@@ -2,7 +2,67 @@
    ACADEMIC PAGES
    ========================================================================== */
 
+// Shared colors let the existing theme switch update every academic page.
+:root {
+  color-scheme: light;
+  --academic-bg: #f5f2eb;
+  --academic-surface: #fff;
+  --academic-surface-hover: #e8eef4;
+  --academic-work-bg: #edf1f4;
+  --academic-footer-bg: #f2f3f3;
+  --academic-text: #172638;
+  --academic-body: #485a6d;
+  --academic-secondary: #607083;
+  --academic-muted: #6a7785;
+  --academic-accent: #365f91;
+  --academic-link: #274d77;
+  --academic-link-hover: #17324f;
+  --academic-gold: #b48b45;
+  --academic-border: rgba(39, 77, 119, 0.2);
+  --academic-link-border: rgba(39, 77, 119, 0.35);
+  --academic-grid: rgba(39, 77, 119, 0.055);
+  --academic-shadow: rgba(39, 77, 119, 0.1);
+  --academic-halo: rgba(54, 95, 145, 0.035);
+  --academic-halo-outer: rgba(54, 95, 145, 0.025);
+  --academic-cv-bg: #172638;
+}
+
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --academic-bg: #15202d;
+  --academic-surface: #1b2a3b;
+  --academic-surface-hover: #2b4056;
+  --academic-work-bg: #111b28;
+  --academic-footer-bg: #111b28;
+  --academic-text: #edf2f7;
+  --academic-body: #c1cedc;
+  --academic-secondary: #b3c2d3;
+  --academic-muted: #a7b8cb;
+  --academic-accent: #a8c9ed;
+  --academic-link: #9fc9f6;
+  --academic-link-hover: #c2dfff;
+  --academic-gold: #d6ab66;
+  --academic-border: rgba(157, 188, 221, 0.25);
+  --academic-link-border: rgba(159, 201, 246, 0.5);
+  --academic-grid: rgba(157, 188, 221, 0.06);
+  --academic-shadow: rgba(0, 0, 0, 0.2);
+  --academic-halo: rgba(157, 188, 221, 0.04);
+  --academic-halo-outer: rgba(157, 188, 221, 0.025);
+  --academic-cv-bg: #0f1926;
+}
+
 body.academic-site {
+  --global-bg-color: var(--academic-surface);
+  --global-footer-bg-color: var(--academic-footer-bg);
+  --global-text-color: var(--academic-text);
+  --global-text-color-light: var(--academic-secondary);
+  --global-masthead-link-color: var(--academic-text);
+  --global-masthead-link-color-hover: var(--academic-link);
+  --global-link-color: var(--academic-link);
+  --global-link-color-hover: var(--academic-link-hover);
+  --global-border-color: var(--academic-border);
+  --global-dark-border-color: var(--academic-border);
+
   display: flex;
   flex-direction: column;
   min-height: 100vh;
@@ -50,7 +110,7 @@ body.academic-site {
 
 .academic-eyebrow {
   margin: 0 0 1rem;
-  color: #365f91;
+  color: var(--academic-accent);
   font-family: $sans-serif;
   font-size: 0.72rem;
   font-weight: 700;
@@ -68,9 +128,9 @@ body.academic-site {
   padding: clamp(5rem, 10vw, 8.5rem) max(5vw, calc((100vw - 1180px) / 2));
   overflow: hidden;
   background:
-    linear-gradient(90deg, rgba(39, 77, 119, 0.055) 1px, transparent 1px),
-    linear-gradient(rgba(39, 77, 119, 0.055) 1px, transparent 1px),
-    #f5f2eb;
+    linear-gradient(90deg, var(--academic-grid) 1px, transparent 1px),
+    linear-gradient(var(--academic-grid) 1px, transparent 1px),
+    var(--academic-bg);
   background-size: 38px 38px;
 
   &::after {
@@ -80,11 +140,11 @@ body.academic-site {
     width: 34rem;
     height: 34rem;
     content: "";
-    border: 1px solid rgba(54, 95, 145, 0.15);
+    border: 1px solid var(--academic-border);
     border-radius: 50%;
     box-shadow:
-      0 0 0 5rem rgba(54, 95, 145, 0.035),
-      0 0 0 10rem rgba(54, 95, 145, 0.025);
+      0 0 0 5rem var(--academic-halo),
+      0 0 0 10rem var(--academic-halo-outer);
   }
 
   &__content {
@@ -95,7 +155,7 @@ body.academic-site {
 
   h1 {
     margin: 0;
-    color: #172638;
+    color: var(--academic-text);
     font-family: $serif;
     font-size: clamp(3.6rem, 7.5vw, 7rem);
     font-weight: 600;
@@ -106,7 +166,7 @@ body.academic-site {
   &__lead {
     max-width: 710px;
     margin: 2rem 0 2.3rem;
-    color: #485a6d;
+    color: var(--academic-body);
     font-family: $serif;
     font-size: clamp(1.2rem, 2vw, 1.55rem);
     line-height: 1.65;
@@ -120,7 +180,7 @@ body.academic-site {
     margin: 0;
 
     span {
-      color: #6a7785;
+      color: var(--academic-muted);
       font-family: $sans-serif;
       font-size: 0.68rem;
       font-weight: 700;
@@ -129,9 +189,9 @@ body.academic-site {
     }
 
     a {
-      color: #274d77;
+      color: var(--academic-link);
       overflow-wrap: anywhere;
-      border-bottom: 1px solid rgba(39, 77, 119, 0.35);
+      border-bottom: 1px solid var(--academic-link-border);
     }
   }
 
@@ -140,11 +200,11 @@ body.academic-site {
     gap: 0.65rem;
     align-items: baseline;
     margin: -0.8rem 0 2.3rem;
-    color: #172638;
+    color: var(--academic-text);
     font-family: $serif;
 
     span {
-      color: #6a7785;
+      color: var(--academic-muted);
       font-family: $sans-serif;
       font-size: 0.68rem;
       font-weight: 700;
@@ -167,22 +227,22 @@ body.academic-site {
   transition: background-color 0.2s ease, color 0.2s ease;
 
   &--primary {
-    color: #fff !important;
-    background: #274d77;
+    color: var(--academic-surface) !important;
+    background: var(--academic-link);
 
     &:hover {
-      background: #17324f;
+      background: var(--academic-link-hover);
     }
   }
 
   &--secondary {
-    color: #274d77 !important;
+    color: var(--academic-link) !important;
     background: transparent;
-    border: 1px solid rgba(39, 77, 119, 0.42) !important;
+    border: 1px solid var(--academic-link-border) !important;
 
     &:hover {
-      color: #fff !important;
-      background: #274d77;
+      color: var(--academic-surface) !important;
+      background: var(--academic-link);
     }
   }
 }
@@ -198,9 +258,9 @@ body.academic-site {
   &__frame {
     position: relative;
     padding: 0.65rem;
-    background: #fff;
-    border: 1px solid rgba(39, 77, 119, 0.2);
-    box-shadow: 1.5rem 1.5rem 0 rgba(39, 77, 119, 0.1);
+    background: var(--academic-surface);
+    border: 1px solid var(--academic-border);
+    box-shadow: 1.5rem 1.5rem 0 var(--academic-shadow);
 
     &::before {
       position: absolute;
@@ -209,8 +269,8 @@ body.academic-site {
       width: 3.8rem;
       height: 3.8rem;
       content: "";
-      border-top: 2px solid #b48b45;
-      border-left: 2px solid #b48b45;
+      border-top: 2px solid var(--academic-gold);
+      border-left: 2px solid var(--academic-gold);
     }
   }
 
@@ -227,13 +287,13 @@ body.academic-site {
     display: flex;
     flex-direction: column;
     margin-top: 1.8rem;
-    color: #485a6d;
+    color: var(--academic-body);
     font-family: $sans-serif;
     font-size: 0.8rem;
     line-height: 1.6;
 
     strong {
-      color: #172638;
+      color: var(--academic-text);
       font-family: $serif;
       font-size: 1rem;
       font-weight: 600;
@@ -259,7 +319,7 @@ body.academic-site {
     h1 {
       margin: 0;
       padding: 0 !important;
-      color: #172638;
+      color: var(--academic-text);
       font-family: $serif;
       font-size: clamp(2.2rem, 4.2vw, 3.8rem);
       font-weight: 500;
@@ -271,14 +331,14 @@ body.academic-site {
     > p:last-child {
       max-width: 640px;
       margin: 1.2rem 0 0;
-      color: #607083;
+      color: var(--academic-secondary);
       line-height: 1.7;
     }
   }
 }
 
 .academic-education {
-  background: #fff;
+  background: var(--academic-surface);
 
   &__timeline {
     border-top: 1px solid var(--global-border-color);
@@ -294,7 +354,7 @@ body.academic-site {
 
   &__period {
     padding-top: 0.25rem;
-    color: #365f91;
+    color: var(--academic-accent);
     font-family: $sans-serif;
     font-size: 0.9rem;
   }
@@ -304,7 +364,7 @@ body.academic-site {
       margin: 0 0 0.4rem;
       padding: 0;
       border: 0;
-      color: #172638;
+      color: var(--academic-text);
       font-family: $serif;
       font-size: 1.45rem;
       font-weight: 600;
@@ -312,20 +372,20 @@ body.academic-site {
 
     p {
       margin: 0.4rem 0 0;
-      color: #607083;
+      color: var(--academic-secondary);
       font-size: 0.92rem;
       line-height: 1.7;
     }
   }
 
   &__institution {
-    color: #273e58 !important;
+    color: var(--academic-text) !important;
     font-weight: 600;
   }
 }
 
 .academic-work {
-  background: #edf1f4;
+  background: var(--academic-work-bg);
 }
 
 .academic-papers {
@@ -338,14 +398,14 @@ body.academic-site {
   grid-template-columns: minmax(180px, 0.55fr) minmax(320px, 1fr);
   gap: 4rem;
   padding: clamp(2rem, 5vw, 4rem);
-  background: #fff;
-  border-left: 3px solid #b48b45;
+  background: var(--academic-surface);
+  border-left: 3px solid var(--academic-gold);
 
   &__meta {
     display: flex;
     flex-direction: column;
     gap: 0.4rem;
-    color: #6b7785;
+    color: var(--academic-muted);
     font-family: $sans-serif;
     font-size: 0.75rem;
     letter-spacing: 0.1em;
@@ -358,7 +418,7 @@ body.academic-site {
       margin: 0 0 1.2rem;
       padding: 0;
       border: 0;
-      color: #172638;
+      color: var(--academic-text);
       font-family: $serif;
       font-size: clamp(1.2rem, 2vw, 1.65rem);
       font-weight: 500;
@@ -368,14 +428,14 @@ body.academic-site {
     p {
       max-width: 650px;
       margin-bottom: 1.7rem;
-      color: #607083;
+      color: var(--academic-secondary);
       line-height: 1.7;
     }
   }
 
   &__authors {
     margin: -0.5rem 0 0.8rem !important;
-    color: #365f91 !important;
+    color: var(--academic-accent) !important;
     font-family: $sans-serif;
     font-size: 0.84rem;
     font-weight: 700;
@@ -388,11 +448,11 @@ body.academic-site {
     gap: 1.5rem;
 
     a {
-      color: #274d77;
+      color: var(--academic-link);
       font-family: $sans-serif;
       font-size: 0.82rem;
       font-weight: 700;
-      border-bottom: 1px solid rgba(39, 77, 119, 0.35);
+      border-bottom: 1px solid var(--academic-link-border);
     }
   }
 }
@@ -404,7 +464,7 @@ body.academic-site {
   align-items: end;
   padding: clamp(4rem, 8vw, 7rem) max(5vw, calc((100vw - 1180px) / 2));
   color: #dce6ef;
-  background: #172638;
+  background: var(--academic-cv-bg);
 
   h1 {
     margin: 0;
@@ -447,12 +507,12 @@ body.academic-site {
 
 .academic-button.btn--light,
 .academic-button--light.btn {
-  color: #172638 !important;
-  background: #fff;
+  color: var(--academic-text) !important;
+  background: var(--academic-surface);
 
   &:hover {
-    color: #172638 !important;
-    background: #e8eef4;
+    color: var(--academic-text) !important;
+    background: var(--academic-surface-hover);
   }
 }
 
@@ -463,9 +523,9 @@ body.academic-site {
   align-items: center;
   justify-content: space-between;
   padding: 1rem max(5vw, calc((100vw - 1180px) / 2));
-  color: #172638;
-  background: #f5f2eb;
-  border-bottom: 1px solid rgba(39, 77, 119, 0.2);
+  color: var(--academic-text);
+  background: var(--academic-bg);
+  border-bottom: 1px solid var(--academic-border);
   font-family: $sans-serif;
 
   &__label {
@@ -492,8 +552,8 @@ body.academic-site {
   a {
     display: block;
     padding: 0.7rem 1rem;
-    color: #274d77;
-    border: 1px solid rgba(39, 77, 119, 0.3);
+    color: var(--academic-link);
+    border: 1px solid var(--academic-border);
     font-size: 0.85rem;
     font-weight: 600;
     text-align: center;
@@ -501,13 +561,13 @@ body.academic-site {
 
     &:hover,
     &[aria-current="page"] {
-      color: #fff;
-      background: #274d77;
-      border-color: #274d77;
+      color: var(--academic-surface);
+      background: var(--academic-link);
+      border-color: var(--academic-link);
     }
 
     &:focus-visible {
-      outline: 3px solid #b48b45;
+      outline: 3px solid var(--academic-gold);
       outline-offset: 3px;
     }
   }

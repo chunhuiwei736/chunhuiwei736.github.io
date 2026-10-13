@@ -131,7 +131,7 @@ for (const filename of ["about.md", "education.html", "publications.html", "cv.m
   const classes = `academic-page${page.permalink === "/" ? " academic-home" : ""}`;
   const html = pageShell(
     page.title,
-    `<article class="splash ${classes}"><section class="page__content">${stripFrontMatter(source)}</section>${pageNavigation(page.permalink)}</article>`,
+    `<article class="splash ${classes}">${pageNavigation(page.permalink)}<section class="page__content">${stripFrontMatter(source)}</section></article>`,
     classes,
   );
   const destination = join(output, page.permalink, "index.html");

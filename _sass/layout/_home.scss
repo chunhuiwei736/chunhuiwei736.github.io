@@ -462,10 +462,10 @@ body.academic-site {
   gap: 1rem 2rem;
   align-items: center;
   justify-content: space-between;
-  padding: 2rem max(5vw, calc((100vw - 1180px) / 2));
+  padding: 1rem max(5vw, calc((100vw - 1180px) / 2));
   color: #172638;
   background: #f5f2eb;
-  border-top: 1px solid rgba(39, 77, 119, 0.2);
+  border-bottom: 1px solid rgba(39, 77, 119, 0.2);
   font-family: $sans-serif;
 
   &__label {

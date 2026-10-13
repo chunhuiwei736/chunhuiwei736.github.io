@@ -123,9 +123,9 @@ const parseFrontMatter = (source) => {
   );
 };
 
-// This lightweight preview renders the four HTML-based academic pages.
+// This lightweight preview renders the HTML-based academic pages.
 // GitHub Pages still builds the complete site with Jekyll.
-for (const filename of ["about.md", "education.html", "publications.html", "cv.md"]) {
+for (const filename of ["about.md", "education.html", "publications.html", "notes.html", "cv.md"]) {
   const source = read(`_pages/${filename}`);
   const page = parseFrontMatter(source);
   const classes = `academic-page${page.permalink === "/" ? " academic-home" : ""}`;

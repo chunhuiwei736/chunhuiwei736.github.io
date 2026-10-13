@@ -18,5 +18,8 @@ layout: default
     <section class="page__content" itemprop="text">
       {{ content }}
     </section>
+    {% if page.academic_navigation %}
+      {% include academic-navigation.html %}
+    {% endif %}
   </article>
 </div>

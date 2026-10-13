@@ -1,6 +1,6 @@
 import { spawnSync } from "node:child_process";
 import { createServer } from "node:http";
-import { readFileSync, readdirSync, writeFileSync, mkdirSync, rmSync, statSync } from "node:fs";
+import { readFileSync, writeFileSync, mkdirSync, rmSync, statSync } from "node:fs";
 import { dirname, extname, join, normalize, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -29,11 +29,12 @@ const mainScss = stripFrontMatter(read("assets/css/main.scss"))
 writeFileSync(previewScss, mainScss);
 
 const npx = process.platform === "win32" ? "npx.cmd" : "npx";
+// An installed Sass CLI can be used when npm registry access is unavailable.
+const sassPath = process.env.SASS_PATH;
 const sass = spawnSync(
-  npx,
+  sassPath ? process.execPath : npx,
   [
-    "--yes",
-    "sass",
+    ...(sassPath ? [sassPath] : ["--yes", "sass"]),
     `--load-path=${join(root, "_sass")}`,
     previewScss,
     previewCss,
@@ -42,7 +43,7 @@ const sass = spawnSync(
   {
     cwd: root,
     stdio: "inherit",
-    shell: process.platform === "win32",
+    shell: !sassPath && process.platform === "win32",
   },
 );
 
@@ -55,12 +56,18 @@ if (sass.status !== 0) {
   process.exit(sass.status ?? 1);
 }
 
-const homepage = stripFrontMatter(read("_pages/about.md"));
+// Use the same page destinations as the Jekyll navigation data.
 const navigation = [
-  { title: "Education", url: "/#education" },
-  { title: "Publications", url: "/#publications" },
-  { title: "CV", url: "/#cv" },
+  { title: "Home", url: "/" },
+  ...[...read("_data/navigation.yml").matchAll(/^  - title:\s*"([^"]+)"\r?\n\s+url:\s*(\S+)/gm)]
+    .map(([, title, url]) => ({ title, url })),
 ];
+
+const pageNavigation = (currentUrl) => `
+  <nav class="academic-page-nav" aria-label="Page navigation">
+    <p class="academic-page-nav__label">Explore</p>
+    <ul>${navigation.map(({ title, url }) => `<li><a href="${url}"${url === currentUrl ? ' aria-current="page"' : ""}>${title}</a></li>`).join("")}</ul>
+  </nav>`;
 
 const masthead = `
   <div class="masthead">
@@ -70,7 +77,6 @@ const masthead = `
           <button aria-label="Open navigation"><span class="navicon"></span></button>
           <ul class="visible-links">
             <li class="masthead__menu-item masthead__menu-item--lg persist"><a href="/">Homepage</a></li>
-            ${navigation.map(({ title, url }) => `<li class="masthead__menu-item"><a href="${url}">${title}</a></li>`).join("")}
             <li id="theme-toggle" class="masthead__menu-item persist tail">
               <a role="button" aria-label="Toggle color theme"><i id="theme-icon" class="fa-solid fa-sun" aria-hidden="true"></i></a>
             </li>
@@ -86,10 +92,10 @@ const pageShell = (title, content, mainClass = "") => `<!doctype html>
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>${title} | Chunhui Wei</title>
+    <title>${title}</title>
     <link rel="stylesheet" href="/assets/css/main.css">
   </head>
-  <body>
+  <body class="academic-site">
     ${masthead}
     <div id="main"${mainClass ? ` class="${mainClass}"` : ""} role="main">${content}</div>
     <div class="page__footer">
@@ -100,14 +106,6 @@ const pageShell = (title, content, mainClass = "") => `<!doctype html>
     <script type="module" src="/assets/js/main.min.js"></script>
   </body>
 </html>`;
-
-const homepageHtml = pageShell(
-  "Mathematics",
-  `<article class="splash academic-home"><section class="page__content">${homepage}</section></article>`,
-  "academic-home",
-);
-
-writeFileSync(join(output, "index.html"), homepageHtml);
 
 const parseFrontMatter = (source) => {
   const block = source.match(/^---\r?\n([\s\S]*?)\r?\n---/);
@@ -125,44 +123,21 @@ const parseFrontMatter = (source) => {
   );
 };
 
-const publications = readdirSync(join(root, "_publications"))
-  .filter((filename) => filename.endsWith(".md"))
-  .map((filename) => parseFrontMatter(read(`_publications/${filename}`)))
-  .sort((a, b) => String(b.date).localeCompare(String(a.date)));
-
-const publicationGroups = [
-  ["manuscripts", "Journal Articles"],
-  ["preprints", "Preprints"],
-];
-
-const publicationsContent = publicationGroups
-  .map(([category, heading]) => {
-    const entries = publications
-      .filter((publication) => publication.category === category)
-      .map(
-        (publication) => `
-          <article class="archive__item">
-            <h2 class="archive__item-title">${publication.title}</h2>
-            <p>${[publication.author, publication.venue, publication.date?.slice(0, 4)].filter(Boolean).join(" · ")}</p>
-            <p>
-              ${publication.paperurl ? `<a href="${publication.paperurl}">Paper</a>` : ""}
-              ${publication.paperpdf ? ` · <a href="${publication.paperpdf}">PDF</a>` : ""}
-            </p>
-          </article>`,
-      )
-      .join("");
-
-    return entries ? `<h2>${heading}</h2>${entries}` : "";
-  })
-  .join("");
-
-const publicationsHtml = pageShell(
-  "Publications",
-  `<article class="page"><div class="page__inner-wrap"><header><h1 class="page__title">Publications</h1></header><section class="page__content">${publicationsContent}</section></div></article>`,
-);
-
-mkdirSync(join(output, "publications"), { recursive: true });
-writeFileSync(join(output, "publications", "index.html"), publicationsHtml);
+// This lightweight preview renders the four HTML-based academic pages.
+// GitHub Pages still builds the complete site with Jekyll.
+for (const filename of ["about.md", "education.html", "publications.html", "cv.md"]) {
+  const source = read(`_pages/${filename}`);
+  const page = parseFrontMatter(source);
+  const classes = `academic-page${page.permalink === "/" ? " academic-home" : ""}`;
+  const html = pageShell(
+    page.title,
+    `<article class="splash ${classes}"><section class="page__content">${stripFrontMatter(source)}</section>${pageNavigation(page.permalink)}</article>`,
+    classes,
+  );
+  const destination = join(output, page.permalink, "index.html");
+  mkdirSync(dirname(destination), { recursive: true });
+  writeFileSync(destination, html);
+}
 
 const mimeTypes = {
   ".css": "text/css; charset=utf-8",
@@ -184,8 +159,10 @@ const safePath = (base, pathname) => {
 createServer((request, response) => {
   const pathname = decodeURIComponent(new URL(request.url, "http://localhost").pathname);
 
-  if (pathname === "/cv/" || pathname === "/cv") {
-    response.writeHead(302, { Location: "/files/CV.pdf" });
+  const redirects = { "/about/": "/", "/about.html": "/", "/resume": "/cv/", "/resume/": "/cv/" };
+  const destination = redirects[pathname] || navigation.find(({ url }) => url !== "/" && pathname === url.slice(0, -1))?.url;
+  if (destination) {
+    response.writeHead(302, { Location: destination });
     response.end();
     return;
   }

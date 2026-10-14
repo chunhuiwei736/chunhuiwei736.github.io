@@ -142,7 +142,7 @@ const parseScalar = (value) => {
 };
 
 const notes = JSON.parse(read("_data/notes.json"));
-const uploadedTime = (version) => `<time datetime="${escapeHtml(version.uploaded_at)}">${escapeHtml(version.uploaded_label)}</time>`;
+const uploadedTime = (version, dateOnly = false) => `<time datetime="${escapeHtml(version.uploaded_at)}">${escapeHtml(dateOnly ? version.uploaded_label.split(",")[0] : version.uploaded_label)}</time>`;
 
 const noteList = () => notes.length ? `
   <div class="academic-papers">
@@ -157,7 +157,7 @@ const noteList = () => notes.length ? `
         <div class="academic-paper__content">
           <h2><a href="${escapeHtml(url)}">${escapeHtml(note.title)}</a></h2>
           ${note.description ? `<p>${escapeHtml(note.description)}</p>` : ""}
-          ${latest ? `<p>Latest upload: ${uploadedTime(latest)}</p>` : ""}
+          ${latest ? `<p>Latest upload: ${uploadedTime(latest, true)}</p>` : ""}
           <div class="academic-paper__links"><a href="${escapeHtml(url)}">View versions <span aria-hidden="true">→</span></a></div>
         </div>
       </article>`;

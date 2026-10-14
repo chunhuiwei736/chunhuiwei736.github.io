@@ -1,6 +1,6 @@
 import { spawnSync } from "node:child_process";
 import { createServer } from "node:http";
-import { readFileSync, writeFileSync, mkdirSync, rmSync, statSync } from "node:fs";
+import { readFileSync, writeFileSync, mkdirSync, readdirSync, rmSync, statSync } from "node:fs";
 import { dirname, extname, join, normalize, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -13,6 +13,13 @@ const port = Number(process.env.PORT || 4000);
 const read = (path) => readFileSync(join(root, path), "utf8");
 const stripFrontMatter = (source) =>
   source.replace(/^---\r?\n(?:[\s\S]*?\r?\n)?---\r?\n/, "");
+const escapeHtml = (value) => String(value ?? "").replace(/[&<>"']/g, (character) => ({
+  "&": "&amp;",
+  "<": "&lt;",
+  ">": "&gt;",
+  '"': "&quot;",
+  "'": "&#39;",
+})[character]);
 
 mkdirSync(dirname(previewCss), { recursive: true });
 
@@ -66,7 +73,7 @@ const navigation = [
 const pageNavigation = (currentUrl) => `
   <nav class="academic-page-nav" aria-label="Page navigation">
     <p class="academic-page-nav__label">Explore</p>
-    <ul>${navigation.map(({ title, url }) => `<li><a href="${url}"${url === currentUrl ? ' aria-current="page"' : ""}>${title}</a></li>`).join("")}</ul>
+    <ul>${navigation.map(({ title, url }) => `<li><a href="${escapeHtml(url)}"${url === currentUrl ? ' aria-current="page"' : ""}>${escapeHtml(title)}</a></li>`).join("")}</ul>
   </nav>`;
 
 const masthead = `
@@ -92,7 +99,7 @@ const pageShell = (title, content, mainClass = "") => `<!doctype html>
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>${title}</title>
+    <title>${escapeHtml(title)}</title>
     <link rel="stylesheet" href="/assets/css/main.css">
   </head>
   <body class="academic-site">
@@ -118,20 +125,94 @@ const parseFrontMatter = (source) => {
       .filter(Boolean)
       .map((match) => [
         match[1],
-        match[2].trim().replace(/^(['"])(.*)\1$/, "$2"),
+        parseScalar(match[2].trim()),
       ]),
   );
 };
 
+const parseScalar = (value) => {
+  if (value.startsWith('"')) {
+    try {
+      return JSON.parse(value);
+    } catch {
+      // Keep supporting simple YAML strings that are not JSON strings.
+    }
+  }
+  return value.replace(/^(['"])(.*)\1$/, "$2").replace(/''/g, "'");
+};
+
+const notes = JSON.parse(read("_data/notes.json"));
+const uploadedTime = (version) => `<time datetime="${escapeHtml(version.uploaded_at)}">${escapeHtml(version.uploaded_label)}</time>`;
+
+const noteList = () => notes.length ? `
+  <div class="academic-papers">
+    ${notes.map((note) => {
+      const url = `/notes/${note.id}/`;
+      const latest = note.versions[0];
+      return `<article class="academic-paper">
+        <div class="academic-paper__meta">
+          <span>Note</span>
+          <span>${note.versions.length} ${note.versions.length === 1 ? "version" : "versions"}</span>
+        </div>
+        <div class="academic-paper__content">
+          <h2><a href="${escapeHtml(url)}">${escapeHtml(note.title)}</a></h2>
+          ${note.description ? `<p>${escapeHtml(note.description)}</p>` : ""}
+          ${latest ? `<p>Latest upload: ${uploadedTime(latest)}</p>` : ""}
+          <div class="academic-paper__links"><a href="${escapeHtml(url)}">View versions <span aria-hidden="true">→</span></a></div>
+        </div>
+      </article>`;
+    }).join("")}
+  </div>` : "<p>No notes have been added yet.</p>";
+
+const noteVersions = (page) => {
+  const note = notes.find(({ id }) => id === page.note_id);
+  if (!note) throw new Error(`No Notes data found for ${page.note_id}`);
+
+  return `<section class="academic-section academic-work" aria-labelledby="note-title">
+    <p><a href="/notes/">← All notes</a></p>
+    <div class="academic-section__heading">
+      <p class="academic-eyebrow">Notes</p>
+      <h1 id="note-title">${escapeHtml(note.title)}</h1>
+      ${note.description ? `<p>${escapeHtml(note.description)}</p>` : ""}
+    </div>
+    <p>Choose a version to read. Versions are listed by upload time, newest first.</p>
+    <div class="academic-papers">
+      ${note.versions.map((version, index) => `<article class="academic-paper" id="version-${escapeHtml(version.id)}">
+        <div class="academic-paper__meta">
+          <span>${index === 0 ? "Latest version" : "Earlier version"}</span>
+          <span>Uploaded</span>
+        </div>
+        <div class="academic-paper__content">
+          <h2>${uploadedTime(version)}</h2>
+          <div class="academic-paper__links">
+            <a href="${escapeHtml(version.pdf)}">View PDF <span aria-hidden="true">→</span></a>
+          </div>
+        </div>
+      </article>`).join("")}
+    </div>
+  </section>`;
+};
+
+const renderContent = (source, page) => stripFrontMatter(source)
+  .replace(/{%\s*include note-list\.html\s*%}/g, () => noteList())
+  .replace(/{%\s*include note-versions\.html\s*%}/g, () => noteVersions(page));
+
 // This lightweight preview renders the HTML-based academic pages.
 // GitHub Pages still builds the complete site with Jekyll.
-for (const filename of ["about.md", "education.html", "publications.html", "notes.html", "cv.md"]) {
+const pageUrls = new Set();
+const filenames = readdirSync(join(root, "_pages"), { withFileTypes: true })
+  .filter((entry) => entry.isFile() && /\.(?:html|md)$/.test(entry.name))
+  .map((entry) => entry.name);
+
+for (const filename of filenames) {
   const source = read(`_pages/${filename}`);
   const page = parseFrontMatter(source);
+  if (page.academic_navigation !== "true" || !page.permalink) continue;
+  pageUrls.add(page.permalink);
   const classes = `academic-page${page.permalink === "/" ? " academic-home" : ""}`;
   const html = pageShell(
     page.title,
-    `<article class="splash ${classes}">${pageNavigation(page.permalink)}<section class="page__content">${stripFrontMatter(source)}</section></article>`,
+    `<article class="splash ${classes}">${pageNavigation(page.academic_navigation_url || page.permalink)}<section class="page__content">${renderContent(source, page)}</section></article>`,
     classes,
   );
   const destination = join(output, page.permalink, "index.html");
@@ -160,7 +241,7 @@ createServer((request, response) => {
   const pathname = decodeURIComponent(new URL(request.url, "http://localhost").pathname);
 
   const redirects = { "/about/": "/", "/about.html": "/", "/resume": "/cv/", "/resume/": "/cv/" };
-  const destination = redirects[pathname] || navigation.find(({ url }) => url !== "/" && pathname === url.slice(0, -1))?.url;
+  const destination = redirects[pathname] || (pageUrls.has(`${pathname}/`) ? `${pathname}/` : null);
   if (destination) {
     response.writeHead(302, { Location: destination });
     response.end();

@@ -15,7 +15,7 @@
           <span>Uploaded</span>
         </div>
         <div class="academic-paper__content">
-          <h2><time datetime="{{ version.uploaded_at | escape }}">{{ version.uploaded_label | escape }}</time></h2>
+          <h2><time datetime="{{ version.uploaded_at | escape }}">{{ version.uploaded_label | split: ',' | first | escape }}</time></h2>
           <div class="academic-paper__links">
             <a href="{{ version.pdf | relative_url }}">View PDF <span aria-hidden="true">&rarr;</span></a>
           </div>

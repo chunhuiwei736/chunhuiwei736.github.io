@@ -183,7 +183,7 @@ const noteVersions = (page) => {
           <span>Uploaded</span>
         </div>
         <div class="academic-paper__content">
-          <h2>${uploadedTime(version)}</h2>
+          <h2>${uploadedTime(version, true)}</h2>
           <div class="academic-paper__links">
             <a href="${escapeHtml(version.pdf)}">View PDF <span aria-hidden="true">→</span></a>
           </div>

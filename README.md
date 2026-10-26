@@ -25,7 +25,7 @@ npm ci
 npm run preview
 ```
 
-Open [http://localhost:4000](http://localhost:4000). `npm run preview` compiles the site stylesheet, renders the academic pages into `_site/`, and serves them on port 4000. Set `PORT` to use another port, for example `PORT=4100 npm run preview`. The first run may download Sass through `npx`; a locally installed Sass executable can be selected with `SASS_PATH`.
+Open [http://localhost:4000](http://localhost:4000). `npm run preview` compiles the site stylesheet, renders the academic pages into `_site/`, and serves them on port 4000. Set `PORT` to use another port, for example `PORT=4100 npm run preview`. The first run may download Sass through `npx`; if Sass is already installed locally, set `SASS_PATH` to its CLI script.
 
 For the complete GitHub Pages/Jekyll build, install Ruby and Bundler, then run:
 

@@ -11,12 +11,12 @@
 site_theme               : "default" # Currently available options are "default", "air"
 title                    : "Homepage"
 title_separator          : "-"
-name                     : &name "Your Name"
-description              : &description "Your Name's academic portfolio"   # Update this with a general description of your site, this is the default if not overridden by a page
+name                     : &name "Chunhui Wei"
+description              : &description "Chunhui Wei is a Ph.D. student at Zhejiang University working in complex geometry, complex algebraic geometry, and algebraic topology."   # Update this with a general description of your site, this is the default if not overridden by a page
 url                      : https://chunhuiwei736.github.io # The base hostname & protocol for your site e.g. "https://[your GitHub username].github.io",
                                                            # or if you already have some other page hosted on Github then use "https://[your GitHub username].github.io/[Your Repo Name]"
 baseurl                  : "" # the subpath of your site, e.g. "/blog"
-repository               : "academicpages/academicpages.github.io"
+repository               : "chunhuiwei736/chunhuiwei736.github.io"
 
 # Site Author - The following control what appear as part of the author content on the side bar.
 #               If a field is blank the icon and link will not appear, otherwise it will be shown.
@@ -27,8 +27,8 @@ author:
   name             : "Chunhui Wei"
   pronouns         : "He/His"  
   #bio              : "Short biography for the left-hand sidebar"
-  location         : "Australia"
-  employer         : "University of Melbourne"
+  location         : "Zhejiang University"
+  employer         : "Zhejiang University"
   uri              : # URL
   email            : "chunhuiwei@zju.edu.cn"
 
@@ -143,7 +143,7 @@ facebook:
   app_id                 :
   publisher              :
 og_image                 :  # Social media default site image
-og_description           :  # Social media default site image description
+og_description           : *description  # Social media default site image description
 # For specifying social profiles
 # - https://developers.google.com/structured-data/customize/social-profiles
 social:

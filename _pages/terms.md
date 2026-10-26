@@ -1,39 +1,43 @@
 ---
 permalink: /terms/
 title: "Terms and Privacy Policy"
-modified: 2016-06-06
+modified: 2026-10-26
 ---
 
 {% include base_path %}
 {% include toc %}
 
-## Privacy Policy
+## Privacy and service information
 
-The privacy of my visitors is extremely important. This Privacy Policy outlines the types of personal information that is received and collected and how it is used.
+This page describes what is configured in this site's source repository as of October 26, 2026. It is not a complete statement of how GitHub Pages, a content-delivery network, a browser, or an external site handles request data.
 
-First and foremost, I will never share your email address or any other personal information to anyone without your direct consent.
+### Configured site features
 
-### Log Files
+The repository configures the following features:
 
-Like many other websites, this site uses log files to help learn about when, from where, and how often traffic flows to this site. The information in these log files include:
+* **Analytics:** `_config.yml` sets `analytics.provider` to `"false"` and leaves the Google Analytics tracking ID empty. The analytics include has no provider branch for `"false"`, so this configuration does not emit the template's Google Analytics snippets.
+* **Comments:** `_config.yml` leaves `comments.provider` empty. The layouts only include comments when a provider is configured and the page enables comments, so Disqus is not enabled by this repository.
+* **Advertising:** No advertising provider or advertising script appears in the repository configuration or templates reviewed for this page. This does not describe external pages linked from the site.
 
-* Internet Protocol addresses (IP)
-* Types of browser
-* Internet Service Provider (ISP)
-* Date and time stamp
-* Referring and exit pages
-* Number of clicks
+These source checks do not establish whether another part of the hosting or delivery infrastructure collects data.
 
-All of this information is not linked to anything that is personally identifiable.
+### Third-party resources
 
-### Cookies and Web Beacons
+The shared footer loads these resources from third-party content-delivery networks:
 
-When you visit this site "convenience" cookies are stored on your computer when you submit a comment to help you log in faster to [Disqus](https://disqus.com) the next time you leave a comment.
+* the [cdnjs polyfill](https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6)
+* [MathJax 3](https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js) from jsDelivr
+* [Plotly 3.0.1](https://cdnjs.cloudflare.com/ajax/libs/plotly.js/3.0.1/plotly.min.js) from cdnjs
+* [Mermaid 11](https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs) from jsDelivr
 
-Third-party advertisers may also place and read cookies on your browser and/or use web beacons to collect information. This site has no access or control over these cookies. You should review the respective privacy policies on any and all third-party ad servers for more information regarding their practices and how to opt-out.
+A browser requests these resources when a page using the shared layout loads. This repository does not establish what the CDN operators collect, retain, or infer from those requests. Review their current policies independently.
 
-If you wish to disable cookies, you may do so through your web browser options. Instructions for doing so can be found on the specific web browsers' websites.
+### Browser storage
 
-#### Google Analytics
+The site's theme toggle stores a `theme` preference in browser `localStorage` so the display preference can be restored. The audited site code does not configure a site-specific cookie or web beacon. A browser or a third-party resource may have its own storage or data practices.
 
-Google Analytics is a web analytics tool I use to help understand how visitors engage with this website. It reports website trends using cookies and web beacons without identifying individual visitors. You can read [Google Analytics Privacy Policy](https://www.google.com/analytics/learn/privacy.html).
+### Information requiring independent confirmation
+
+The repository does not establish whether GitHub Pages or other hosting infrastructure creates access logs, which fields those logs contain, how long they are retained, or whether they are linked to individuals. This page therefore makes no claim about visitor IP addresses, browser or Internet Service Provider details, timestamps, referrers, clicks, or the identifiability of log data. Confirm those practices with the relevant providers.
+
+The site publishes a contact email address as a `mailto` link. This repository does not process that mailbox or define how messages are shared or retained; ask the site owner about those practices before sending personal information.
